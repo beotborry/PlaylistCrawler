@@ -3,9 +3,9 @@ from selenium import webdriver
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException, NoAlertPresentException
-from main import playlist
+from test import playlist
 
-driver = webdriver.Chrome('C:/Users/JuHyeon Park/Desktop/chromedriver.exe')
+driver = webdriver.Chrome('./chromedriver')
 driver.implicitly_wait(2)
 driver.get('https://www.melon.com/index.htm')
 
@@ -19,7 +19,7 @@ driver.find_element_by_xpath('//*[@id="btnLogin"]').click()
 
 
 # 메인 검색 창과 검색 결과 화면의 검색창 element id 가 달라, 아래 루프에서는 검색 결과 화면이 검색창 element id로 통일시키기 위해 임의 검색을 한번 수행
-driver.find_element_by_id('top_search').send_keys('oboki')
+driver.find_element_by_id('top_search').send_keys('temp')
 driver.find_element_by_xpath('//*[@id="gnb"]/fieldset/button[2]/span').click()
 
 # Loop
@@ -28,10 +28,8 @@ for p in playlist:
         WebDriverWait(driver, 10).until(lambda d: len(d.window_handles) == 1)
         driver.switch_to.window(driver.window_handles[0])
 
-        p = p.split('\n')[0]
-
         driver.find_element_by_id('top_search').clear()
-        driver.find_element_by_id('top_search').send_keys(p)
+        driver.find_element_by_id('top_search').send_keys(p[0] + ' ' + p[1])
         driver.find_element_by_xpath('//*[@id="header_wrap"]/div[3]/fieldset/button[2]/span').click()
 
         driver.find_element_by_xpath('//*[@id="divCollection"]/ul/li[3]/a').click()
@@ -62,11 +60,11 @@ for p in playlist:
             driver.find_element_by_xpath('/html/body/div/div/div[2]/button/span/span').click()
 
     except NoSuchElementException:
-        print("Error: "+p)
+        print("Error: "+ p[0] + ' ' + p[1])
         traceback.print_exc()
         continue
     except IndexError:
-        print("Error: "+p)
+        print("Error: "+ p[0] + ' ' + p[1])
         traceback.print_exc()
         continue
 
